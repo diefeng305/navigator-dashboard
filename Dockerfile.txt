@@ -1,0 +1,21 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# 复制并安装依赖
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 复制所有项目文件
+COPY backend/ backend/
+COPY frontend/ frontend/
+
+# 验证文件存在
+RUN test -f backend/app.py && echo "app.py exists" || (echo "app.py missing" && exit 1)
+
+# 创建数据目录
+RUN mkdir -p /app/data
+
+EXPOSE 5000
+
+CMD ["python", "backend/app.py"]

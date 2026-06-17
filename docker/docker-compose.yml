@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  my-navigator:
+    image: diefeng305/my-hp:latest # 后续你上传到hub的镜像名
+    container_name: fn-navigator
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/app/data        # 挂载数据库，防止容器更新后数据丢失
+      - ./storage:/app/storage  # 挂载图标和书签
+    restart: always

@@ -1,0 +1,470 @@
+/* --- 全局黑客级发光配色与重置 --- */
+* {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+body, html {
+    width: 100%; height: 100%;
+    background-color: #0b111e; color: #e2e8f0; overflow: hidden;
+}
+
+/* ================= 1. 顶部通栏与下拉菜单组件 ================= */
+.top-navbar {
+    width: 100%; height: 60px; background-color: #0f182a; border-bottom: 1px solid #1e293b;
+    display: flex; justify-content: space-between; align-items: center; padding: 0 24px;
+    position: relative; z-index: 11;
+}
+.brand-area { display: flex; align-items: center; gap: 14px; }
+.brand-logo {
+    width: 28px; height: 28px; background: linear-gradient(135deg, #00f0ff, #7000ff);
+    color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 14px; box-shadow: 0 0 12px rgba(0,240,255,0.4);
+}
+.brand-text { font-size: 16px; font-weight: 600; color: #fff; letter-spacing: 0.5px; }
+
+/* 下拉菜单相对定位容器 */
+.user-area-wrapper { position: relative; }
+
+.user-status-area {
+    display: flex; align-items: center; gap: 12px; cursor: pointer;
+    padding: 6px 16px; border-radius: 20px; background: rgba(30,41,59,0.4);
+    border: 1px solid #1e293b; transition: all 0.2s ease; user-select: none;
+}
+.user-status-area:hover, .user-status-area.active { border-color: #00f0ff; background: rgba(0,240,255,0.05); }
+
+/* 磨砂玻璃悬浮下拉菜单 */
+.user-dropdown-menu {
+    position: absolute; top: calc(100% + 8px); right: 0; width: 160px;
+    background: rgba(15, 24, 42, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid #1e293b; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    padding: 6px 0; display: none; z-index: 100; transform: translateY(-5px); transition: opacity 0.2s, transform 0.2s; opacity: 0; pointer-events: none;
+}
+.user-dropdown-menu.show { display: block; opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+.dropdown-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+    font-size: 13px; color: #94a3b8; cursor: pointer; transition: all 0.15s;
+}
+.dropdown-item:hover { background: rgba(30,41,59,0.7); color: #fff; }
+.dropdown-item i { font-size: 14px; width: 16px; text-align: center; color: #64748b; }
+.dropdown-item:hover i { color: #00f0ff; }
+.dropdown-item.logout-action:hover { color: #ef4444; }
+.dropdown-item.logout-action:hover i { color: #ef4444; }
+.dropdown-divider { height: 1px; background: #1e293b; margin: 4px 0; }
+
+/* ================= 2. 左侧磁吸导航侧边栏（完全浮动式 - 无挤压动画） ================= */
+.main-container {
+    display: flex;
+    width: 100%;
+    height: calc(100% - 60px);
+    position: relative;
+}
+
+/* 右侧内容区域 - 添加左边距，避免被悬浮的侧边栏遮挡 */
+.organizr-main {
+    flex: 1;
+    height: 100%;
+    position: relative;
+    background-color: #0b111e;
+    overflow: hidden;
+    min-width: 0;
+    z-index: 1;
+    margin-left: 68px;
+    transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.organizr-sidebar:hover ~ .organizr-main,
+.main-container:has(.organizr-sidebar:hover) .organizr-main {
+    margin-left: 68px;
+}
+
+body.compact-mode .organizr-main {
+    margin-left: 52px;
+}
+
+.organizr-sidebar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 68px;
+    height: 100%;
+    background-color: #0f182a;
+    border-right: 1px solid #1e293b;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 20;
+    overflow-x: hidden;
+    box-shadow: none;
+}
+
+.organizr-sidebar:hover {
+    width: 240px;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+    background: rgba(15, 24, 42, 0.96);
+    backdrop-filter: blur(12px);
+    border-right: 1px solid rgba(0, 240, 255, 0.3);
+}
+
+.organizr-sidebar:hover ~ .organizr-main,
+.main-container:has(.organizr-sidebar:hover) .organizr-main {
+    filter: brightness(0.95);
+    transition: filter 0.2s;
+}
+
+.nav-menu {
+    list-style: none;
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 15px;
+}
+
+.nav-menu .nav-title {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity 0.2s, transform 0.2s;
+    font-size: 14px;
+    font-weight: 500;
+    color: #94a3b8;
+    margin-left: 15px;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.organizr-sidebar:hover .nav-title {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.arrow-indicator {
+    font-size: 11px;
+    color: #475569;
+    transition: transform 0.2s;
+    opacity: 0;
+    flex-shrink: 0;
+}
+
+.organizr-sidebar:hover .arrow-indicator {
+    opacity: 1;
+}
+
+.sub-menu-list {
+    list-style: none;
+    display: none;
+    background-color: rgba(9, 14, 24, 0.96);
+}
+
+.nav-category-block.open .sub-menu-list {
+    display: block;
+}
+
+.nav-category-block.open .arrow-indicator {
+    transform: rotate(90deg);
+    color: #00f0ff;
+}
+
+.menu-item-row, .sub-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+    padding: 0 22px;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.menu-item-row:hover, .sub-item-row:hover {
+    background-color: rgba(30, 41, 59, 0.6);
+    color: #00f0ff;
+}
+
+.menu-item-row.active::before, .sub-item-row.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20%;
+    height: 60%;
+    width: 3px;
+    background-color: #00f0ff;
+    box-shadow: 0 0 14px #00f0ff;
+}
+
+.item-left-group {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.sidebar-icon-fa {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.sidebar-icon-custom {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.nav-category-block {
+    width: 100%;
+}
+
+/* ================= 3. 右侧多视图绝对物理隔离层 ================= */
+.main-view { position: absolute; top:0; left:0; width:100%; height:100%; display: none !important; }
+.main-view.active { display: block !important; }
+#contentFrame, #pageFrame { border: none; width:100%; height:100%; }
+
+.iframe-loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0b111e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+}
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 2px solid rgba(0,240,255,0.1);
+    border-top-color: #00f0ff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ================= 4. 紧凑模式等辅助样式 ================= */
+body.compact-mode .organizr-sidebar { width: 52px; }
+body.compact-mode .organizr-sidebar:hover { width: 220px; }
+
+body.no-animation * { animation-duration: 0s !important; transition-duration: 0s !important; }
+body.no-animation .spinner { animation: none; }
+
+body.no-blur .user-dropdown-menu {
+    backdrop-filter: none;
+    background: rgba(15, 24, 42, 0.95);
+}
+body.no-blur .organizr-sidebar:hover { backdrop-filter: none; background: rgba(15, 24, 42, 0.98); }
+
+body.no-glow .brand-logo { box-shadow: none; }
+body.no-glow .menu-item-row.active::before, .no-glow .sub-item-row.active::before { box-shadow: none; }
+body.no-glow .btn-cyan { box-shadow: none; }
+
+/* ================= 5. 登录弹窗优化样式 ================= */
+.organizr-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(15, 24, 42, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    border-radius: 24px;
+    width: 400px;
+    max-width: 90vw;
+    z-index: 101;
+    display: none;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 240, 255, 0.1);
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.modal-header {
+    padding: 28px 28px 16px;
+    border-bottom: 1px solid rgba(30, 41, 59, 0.5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h4 {
+    font-size: 20px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #fff, #00f0ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 1px;
+}
+
+.modal-header .close-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: #64748b;
+    transition: all 0.2s ease;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.modal-header .close-icon:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.modal-body {
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-body .form-group {
+    margin-bottom: 28px;
+    position: relative;
+}
+
+.modal-body .form-group input {
+    width: 100%;
+    padding: 14px 16px 6px 16px;
+    background: rgba(11, 17, 30, 0.6);
+    border: 1.5px solid #1e293b;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.modal-body .form-group input:focus {
+    border-color: #00f0ff;
+    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.1);
+    background: rgba(11, 17, 30, 0.8);
+}
+
+.modal-body .form-group label {
+    position: absolute;
+    left: 16px;
+    top: 14px;
+    color: #64748b;
+    font-size: 14px;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.modal-body .form-group input:focus ~ label,
+.modal-body .form-group input:valid ~ label {
+    top: -8px;
+    left: 12px;
+    font-size: 11px;
+    color: #00f0ff;
+    background: #0f182a;
+    padding: 0 6px;
+    border-radius: 10px;
+}
+
+.modal-body .btn-cyan {
+    width: 100%;
+    padding: 14px;
+    margin-top: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 40px;
+    background: linear-gradient(135deg, #00f0ff, #0072ff);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-body .btn-cyan:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 240, 255, 0.3);
+}
+
+.modal-body .btn-cyan:active {
+    transform: translateY(0);
+}
+
+.modal-body .btn-cyan::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.modal-body .btn-cyan:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* 遮罩层优化 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 8, 15, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: none;
+    animation: overlayFadeIn 0.2s ease-out;
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 响应式调整 */
+@media (max-width: 480px) {
+    .organizr-modal {
+        width: 90%;
+        border-radius: 20px;
+    }
+    
+    .modal-header {
+        padding: 20px 20px 12px;
+    }
+    
+    .modal-header h4 {
+        font-size: 18px;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .modal-body .form-group input {
+        padding: 12px 14px 6px 14px;
+        font-size: 14px;
+    }
+}

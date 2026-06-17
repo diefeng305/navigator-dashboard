@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页内容定制</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #0b111e;
+            color: #e2e8f0;
+            padding: 24px;
+            min-height: 100vh;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        
+        .page-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .page-header h2 i {
+            color: #00f0ff;
+        }
+        
+        .btn-cyan {
+            background: linear-gradient(135deg, #00f0ff, #0072ff);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .btn-cyan:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 240, 255, 0.3);
+        }
+        
+        .btn-slate {
+            background-color: #1e293b;
+            color: #94a3b8;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-slate:hover {
+            background-color: #334155;
+            color: #fff;
+        }
+        
+        .btn-red {
+            background-color: #7f1d1d;
+            color: #fca5a5;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        
+        .btn-red:hover {
+            background-color: #991b1b;
+            color: #fff;
+        }
+        
+        .cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .card-item {
+            background: #0f182a;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        
+        .card-item:hover {
+            border-color: rgba(0, 240, 255, 0.3);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            border-bottom: 1px solid #1e293b;
+        }
+        
+        .card-header:hover {
+            background: rgba(0, 240, 255, 0.05);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .drag-handle {
+            cursor: grab;
+            color: #475569;
+        }
+        
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+        
+        .card-title h3 {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .card-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: rgba(0, 240, 255, 0.1);
+            color: #00f0ff;
+        }
+        
+        .card-badge.disabled {
+            background: rgba(100, 116, 139, 0.2);
+            color: #64748b;
+        }
+        
+        .card-type-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: rgba(168, 85, 247, 0.2);
+            color: #a855f7;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .card-actions button {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .card-actions button:hover {
+            background: #1e293b;
+            color: #fff;
+        }
+        
+        .card-actions .delete-btn:hover {
+            color: #ef4444;
+        }
+        
+        .card-form {
+            padding: 20px;
+            display: none;
+            border-top: 1px solid #1e293b;
+        }
+        
+        .card-form.open {
+            display: block;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-group label {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: #0b111e;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #00f0ff;
+            box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+            font-family: monospace;
+        }
+        
+        .form-group small {
+            color: #475569;
+            font-size: 11px;
+        }
+        
+        .config-hint {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+        
+        .nas-hint {
+            margin-top: 12px;
+            padding: 12px;
+            background: #0b111e;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+        
+        .nas-hint strong {
+            color: #e2e8f0;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #1e293b;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #1e293b;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #64748b;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background: linear-gradient(135deg, #00f0ff, #0072ff);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+            background-color: white;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal {
+            background: #0f182a;
+            border: 1px solid #1e293b;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 620px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: modalFadeIn 0.2s ease;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #1e293b;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        .close-icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.2s;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .close-icon:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        
+        .card-type-select {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .card-type-option {
+            background: #0b111e;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .card-type-option:hover {
+            border-color: #00f0ff;
+            background: rgba(0, 240, 255, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .card-type-option.selected {
+            border-color: #00f0ff;
+            background: rgba(0, 240, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        }
+        
+        .card-type-option i {
+            font-size: 28px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .card-type-option .type-name {
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .card-type-option .type-desc {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+        
+        .mode-toggle-group {
+            display: flex;
+            gap: 8px;
+            background: #0b111e;
+            border-radius: 8px;
+            padding: 4px;
+            border: 1px solid #1e293b;
+            margin-bottom: 12px;
+        }
+        
+        .mode-toggle-btn {
+            flex: 1;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .mode-toggle-btn:hover {
+            color: #94a3b8;
+        }
+        
+        .mode-toggle-btn.active {
+            background: #00f0ff;
+            color: #0b111e;
+        }
+        
+        .mode-config-area {
+            padding: 16px;
+            background: #0b111e;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+        }
+        
+        .mode-config-area .form-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            color: #64748b;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(0, 240, 255, 0.1);
+            border-top-color: #00f0ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 16px;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #475569;
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .card-type-select {
+                grid-template-columns: 1fr;
+            }
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .card-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            .mode-toggle-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <h2><i class="fa-solid fa-puzzle-piece"></i> 首页卡片定制</h2>
+        <button class="btn-cyan" id="addCardBtn"><i class="fa-solid fa-plus"></i> 添加卡片</button>
+    </div>
+    
+    <div id="cardsContainer" class="cards-container">
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>加载卡片配置中...</p>
+        </div>
+    </div>
+    
+    <!-- 添加卡片弹窗 -->
+    <div class="modal-overlay" id="addCardModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-plus-circle"></i> 添加新卡片</h3>
+                <span class="close-icon" id="closeModalBtn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="card-type-select" id="cardTypeSelect">
+                    <div class="card-type-option" data-type="weather">
+                        <i class="fa-solid fa-cloud-sun"></i>
+                        <div class="type-name">天气预报</div>
+                        <div class="type-desc">支持 iframe 嵌入 或 OpenWeatherMap API</div>
+                    </div>
+                    <div class="card-type-option" data-type="system">
+                        <i class="fa-solid fa-microchip"></i>
+                        <div class="type-name">系统状态</div>
+                        <div class="type-desc">CPU、内存、磁盘、温度监控，支持 NAS</div>
+                    </div>
+                    <div class="card-type-option" data-type="stats">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <div class="type-name">导航统计</div>
+                        <div class="type-desc">导航链接数和用户数统计</div>
+                    </div>
+                    <div class="card-type-option" data-type="emby">
+                        <i class="fa-solid fa-film"></i>
+                        <div class="type-name">Emby/Jellyfin</div>
+                        <div class="type-desc">最近添加的媒体内容，可按类型筛选</div>
+                    </div>
+                    <div class="card-type-option" data-type="zblog">
+                        <i class="fa-solid fa-blog"></i>
+                        <div class="type-name">Z-Blog 博客</div>
+                        <div class="type-desc">显示分类和最新文章</div>
+                    </div>
+                    <div class="card-type-option" data-type="custom">
+                        <i class="fa-solid fa-code"></i>
+                        <div class="type-name">自定义API</div>
+                        <div class="type-desc">接入任意 JSON API 数据</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <div class="form-group">
+                        <label>卡片标题 *</label>
+                        <input type="text" id="newCardTitle" placeholder="例如：系统状态">
+                    </div>
+                    
+                    <!-- 天气卡片专用配置 -->
+                    <div id="weatherConfigArea" style="display: none; margin-top: 16px;">
+                        <label style="font-size: 12px; color: #64748b; font-weight: 500; display: block; margin-bottom: 8px;">数据来源模式</label>
+                        <div class="mode-toggle-group" id="weatherModeToggle">
+                            <button class="mode-toggle-btn active" data-mode="iframe">iframe 嵌入</button>
+                            <button class="mode-toggle-btn" data-mode="api">API 接口</button>
+                        </div>
+                        
+                        <div id="iframeModeConfig" class="mode-config-area">
+                            <div class="form-group">
+                                <label>iframe 嵌入代码</label>
+                                <textarea id="newCardIframeCode" rows="3" placeholder="粘贴天气网站提供的 iframe 代码"></textarea>
+                                <div class="config-hint">系统会自动从 URL 中识别城市，并使用自定义样式展示</div>
+                            </div>
+                            <div class="form-group" style="margin-top: 12px;">
+                                <label>OpenWeatherMap API Key（可选）</label>
+                                <input type="text" id="newCardIframeApiKey" placeholder="输入 API Key 可获取实时天气数据">
+                                <div class="config-hint">如果提供 API Key，将使用 OpenWeatherMap 显示真实天气数据</div>
+                            </div>
+                            <div class="form-group" style="margin-top: 12px;">
+                                <label>iframe 高度 (px)</label>
+                                <input type="number" id="newCardIframeHeight" value="150" placeholder="150">
+                            </div>
+                        </div>
+                        
+                        <div id="apiModeConfig" class="mode-config-area" style="display: none;">
+                            <div class="form-group">
+                                <label>API 服务地址</label>
+                                <input type="text" id="newCardApiUrl" placeholder="https://api.openweathermap.org/data/2.5/weather">
+                                <div class="config-hint">默认使用 OpenWeatherMap API，可自定义</div>
+                            </div>
+                            <div class="form-group" style="margin-top: 12px;">
+                                <label>API Key</label>
+                                <input type="text" id="newCardApiKey" placeholder="你的 OpenWeatherMap API Key">
+                            </div>
+                            <div class="form-group" style="margin-top: 12px;">
+                                <label>城市名称</label>
+                                <input type="text" id="newCardCity" value="Beijing" placeholder="Beijing">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Emby 卡片专用配置 -->
+                    <div id="embyConfigArea" style="display: none; margin-top: 16px;">
+                        <div class="form-group">
+                            <label>Emby 服务器地址 *</label>
+                            <input type="text" id="newCardEmbyUrl" placeholder="http://192.168.1.100:8096">
+                            <div class="config-hint">例如：http://192.168.1.100:8096</div>
+                        </div>
+                        <div class="form-group" style="margin-top: 12px;">
+                            <label>API Key *</label>
+                            <input type="text" id="newCardEmbyKey" placeholder="你的 Emby API Key">
+                            <div class="config-hint">在 Emby 后台 → API 密钥 中获取</div>
+                        </div>
+                        <div class="form-group" style="margin-top: 12px;">
+                            <label>显示媒体类型</label>
+                            <select id="newCardEmbyType">
+                                <option value="all">全部</option>
+                                <option value="movie">电影</option>
+                                <option value="shows">剧集</option>
+                                <option value="tv">电视节目</option>
+                                <option value="video">视频</option>
+                                <option value="music">音乐</option>
+                                <option value="photo">照片</option>
+                                <option value="boxset">合集</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Z-Blog 卡片专用配置 -->
+                    <div id="zblogConfigArea" style="display: none; margin-top: 16px;">
+                        <div class="form-group">
+                            <label>XML-RPC 地址 *</label>
+                            <input type="text" id="newCardZblogUrl" placeholder="http://你的zblog域名/zb_system/xml-rpc/index.php">
+                            <div class="config-hint">Z-Blog XML-RPC 接口地址，需在后台启用 XML-RPC 协议</div>
+                        </div>
+                        <div class="form-group" style="margin-top: 12px;">
+                            <label>用户名 *</label>
+                            <input type="text" id="newCardZblogUser" placeholder="Z-Blog 登录用户名">
+                        </div>
+                        <div class="form-group" style="margin-top: 12px;">
+                            <label>密码 *</label>
+                            <input type="password" id="newCardZblogPass" placeholder="Z-Blog 登录密码">
+                        </div>
+                        <div class="form-group" style="margin-top: 12px;">
+                            <label>每分类文章数</label>
+                            <input type="number" id="newCardZblogPosts" value="3" placeholder="3">
+                            <div class="config-hint">每个分类显示的最新文章数量</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 系统状态卡片专用配置 -->
+                    <div id="systemConfigArea" style="display: none; margin-top: 16px;">
+                        <div class="form-group">
+                            <label>监控模式</label>
+                            <select id="newCardSystemMode" onchange="toggleSystemConfig()">
+                                <option value="local">本地系统</option>
+                                <option value="synology">群晖 (Synology)</option>
+                                <option value="fnos">飞牛 (fnOS)</option>
+                                <option value="qnap">威联通 (QNAP)</option>
+                                <option value="unraid">Unraid</option>
+                            </select>
+                            <div class="config-hint">选择要监控的 NAS 系统类型</div>
+                        </div>
+                        
+                        <!-- NAS 配置区域 -->
+                        <div id="nasConfigArea" style="display: none; margin-top: 12px;">
+                            <div class="form-group">
+                                <label>NAS 地址</label>
+                                <input type="text" id="newCardNasUrl" placeholder="http://192.168.1.100:5000">
+                                <div class="config-hint">输入 NAS 的 IP 地址和端口</div>
+                            </div>
+                            <div class="form-group" style="margin-top: 12px;" id="nasUsernameGroup">
+                                <label>用户名</label>
+                                <input type="text" id="newCardNasUser" placeholder="admin">
+                            </div>
+                            <div class="form-group" style="margin-top: 12px;" id="nasPasswordGroup">
+                                <label>密码</label>
+                                <input type="password" id="newCardNasPass" placeholder="密码">
+                            </div>
+                            <div class="form-group" style="margin-top: 12px; display: none;" id="nasApiKeyGroup">
+                                <label>API Key (可选)</label>
+                                <input type="text" id="newCardNasApiKey" placeholder="Unraid API Key">
+                                <div class="config-hint">根据监控容器配置决定是否需要</div>
+                            </div>
+                            
+                            <!-- 各系统的配置提示 -->
+                            <div id="nasHintSynology" class="nas-hint" style="display:none;">
+                                <i class="fa-solid fa-info-circle"></i> 
+                                <strong>群晖配置说明：</strong><br>
+                                1. 确保 DSM 已开启 Web 服务 (控制面板 → 网络 → DSM 设置 → 启用 HTTPS)<br>
+                                2. 端口默认为 5000 (HTTP) 或 5001 (HTTPS)<br>
+                                3. 使用 DSM 登录用户名和密码
+                            </div>
+                            <div id="nasHintFnos" class="nas-hint" style="display:none;">
+                                <i class="fa-solid fa-info-circle"></i> 
+                                <strong>飞牛配置说明：</strong><br>
+                                1. 飞牛 OS 默认端口为 8000<br>
+                                2. 使用飞牛 Web 界面的登录用户名和密码<br>
+                                3. 需要飞牛 OS 版本支持 WebSocket API
+                            </div>
+                            <div id="nasHintQnap" class="nas-hint" style="display:none;">
+                                <i class="fa-solid fa-info-circle"></i> 
+                                <strong>威联通配置说明：</strong><br>
+                                1. 确保 QTS 已开启系统监控服务<br>
+                                2. 默认端口为 8080 (HTTP) 或 443 (HTTPS)<br>
+                                3. 使用 QTS 登录用户名和密码
+                            </div>
+                            <div id="nasHintUnraid" class="nas-hint" style="display:none;">
+                                <i class="fa-solid fa-info-circle"></i> 
+                                <strong>Unraid 配置说明：</strong><br>
+                                1. 需要先在 Unraid 应用商店安装监控容器<br>
+                                2. 推荐安装 "UMA" 或 "unraid-simple-monitoring-api"<br>
+                                3. 安装后填写对应的端口地址 (默认 24940)<br>
+                                4. API Key 为可选，根据容器配置决定
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 其他卡片通用配置 -->
+                    <div id="otherCardConfig" style="display: none; margin-top: 16px;">
+                        <div class="form-group">
+                            <label>API / 服务地址</label>
+                            <input type="text" id="newCardOtherApiUrl" placeholder="https://api.example.com/data">
+                        </div>
+                        <div class="form-group" style="margin-top: 12px;">
+                            <label>API Key (可选)</label>
+                            <input type="text" id="newCardOtherApiKey" placeholder="可选">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-slate" id="cancelModalBtn">取消</button>
+                <button class="btn-cyan" id="confirmAddCardBtn">确认添加</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var currentCards = [];
+        var selectedCardType = 'weather';
+        var selectedWeatherMode = 'iframe';
+        
+        var cardTypeConfig = {
+            weather: { name: '天气预报', icon: 'fa-solid fa-cloud-sun', needApiUrl: false, needApiKey: false },
+            system: { name: '系统状态', icon: 'fa-solid fa-microchip', needApiUrl: false, needApiKey: false },
+            stats: { name: '导航统计', icon: 'fa-solid fa-chart-line', needApiUrl: false, needApiKey: false },
+            emby: { name: 'Emby/Jellyfin', icon: 'fa-solid fa-film', needApiUrl: true, needApiKey: true },
+            zblog: { name: 'Z-Blog 博客', icon: 'fa-solid fa-blog', needApiUrl: true, needApiKey: true },
+            custom: { name: '自定义API', icon: 'fa-solid fa-code', needApiUrl: true, needApiKey: false }
+        };
+        
+        // 媒体类型显示映射
+        var mediaTypeLabels = {
+            'all': '全部',
+            'movie': '电影',
+            'shows': '剧集',
+            'tv': '电视节目',
+            'video': '视频',
+            'music': '音乐',
+            'photo': '照片',
+            'boxset': '合集'
+        };
+        
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        function getCardTypeName(type) {
+            return cardTypeConfig[type] ? cardTypeConfig[type].name : type;
+        }
+        
+        // ========== 系统状态配置切换 ==========
+        function toggleSystemConfig() {
+            var mode = document.getElementById('newCardSystemMode').value;
+            var nasConfig = document.getElementById('nasConfigArea');
+            var hints = document.querySelectorAll('.nas-hint');
+            var usernameGroup = document.getElementById('nasUsernameGroup');
+            var passwordGroup = document.getElementById('nasPasswordGroup');
+            var apiKeyGroup = document.getElementById('nasApiKeyGroup');
+            
+            if (mode === 'local') {
+                nasConfig.style.display = 'none';
+                return;
+            }
+            
+            nasConfig.style.display = 'block';
+            
+            // 隐藏所有提示
+            hints.forEach(function(h) { h.style.display = 'none'; });
+            
+            // 显示对应提示
+            var hintMap = {
+                'synology': 'nasHintSynology',
+                'fnos': 'nasHintFnos',
+                'qnap': 'nasHintQnap',
+                'unraid': 'nasHintUnraid'
+            };
+            var hintId = hintMap[mode];
+            if (hintId) {
+                document.getElementById(hintId).style.display = 'block';
+            }
+            
+            // Unraid 使用 API Key，其他使用用户名密码
+            if (mode === 'unraid') {
+                usernameGroup.style.display = 'none';
+                passwordGroup.style.display = 'none';
+                apiKeyGroup.style.display = 'block';
+            } else {
+                usernameGroup.style.display = 'block';
+                passwordGroup.style.display = 'block';
+                apiKeyGroup.style.display = 'none';
+            }
+        }
+        
+        // ========== 加载卡片列表 ==========
+        async function loadCards() {
+            var container = document.getElementById('cardsContainer');
+            if (!container) return;
+            
+            container.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>加载卡片配置中...</p></div>';
+            
+            try {
+                var response = await fetch('/api/home/cards');
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                var cards = await response.json();
+                currentCards = cards || [];
+                renderCards(currentCards);
+            } catch (error) {
+                console.error('加载卡片失败:', error);
+                container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-circle-exclamation"></i><p>加载失败: ' + error.message + '</p><button class="btn-cyan" onclick="location.reload()" style="margin-top:16px;">重试</button></div>';
+            }
+        }
+        
+        // ========== 渲染卡片列表 ==========
+        function renderCards(cards) {
+            var container = document.getElementById('cardsContainer');
+            
+            if (!cards || cards.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-puzzle-piece"></i>
+                        <p>暂无卡片，点击右上角"添加卡片"开始配置</p>
+                        <button class="btn-cyan" onclick="document.getElementById('addCardBtn').click()" style="margin-top:16px;">
+                            <i class="fa-solid fa-plus"></i> 添加第一个卡片
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = cards.map(function(card) {
+                var displayConfig = card.display_config || {};
+                var isWeather = card.card_type === 'weather';
+                var isEmby = card.card_type === 'emby';
+                var isZblog = card.card_type === 'zblog';
+                var isSystem = card.card_type === 'system';
+                var mode = isWeather ? (displayConfig.mode || 'iframe') : '';
+                var iframeCode = isWeather ? (card.api_url || '') : '';
+                var iframeHeight = isWeather ? (displayConfig.height || 150) : '';
+                var apiKey = isWeather ? (displayConfig.api_key || '') : '';
+                var mediaType = isEmby ? (displayConfig.media_type || 'all') : 'all';
+                var mediaTypeLabel = mediaTypeLabels[mediaType] || '全部';
+                var nasType = isSystem ? (displayConfig.nas_type || 'local') : 'local';
+                var nasTypeLabels = {
+                    'local': '本地',
+                    'synology': '群晖',
+                    'fnos': '飞牛',
+                    'qnap': '威联通',
+                    'unraid': 'Unraid'
+                };
+                var nasTypeLabel = nasTypeLabels[nasType] || '本地';
+                
+                return `
+                    <div class="card-item" data-id="${card.id}">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="drag-handle"><i class="fa-solid fa-grip-vertical"></i></span>
+                                <h3>${escapeHtml(card.title)}</h3>
+                                <span class="card-type-badge">${getCardTypeName(card.card_type)}</span>
+                                ${isWeather ? `<span class="card-badge">${mode === 'iframe' ? 'iframe模式' : 'API模式'}</span>` : ''}
+                                ${isEmby ? `<span class="card-badge">${mediaTypeLabel}</span>` : ''}
+                                ${isSystem ? `<span class="card-badge">${nasTypeLabel}</span>` : ''}
+                                ${isZblog ? `<span class="card-badge">XML-RPC</span>` : ''}
+                                <span class="card-badge ${card.enabled ? '' : 'disabled'}">${card.enabled ? '已启用' : '已禁用'}</span>
+                            </div>
+                            <div class="card-actions">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" class="toggle-enabled" data-id="${card.id}" ${card.enabled ? 'checked' : ''}>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <button class="edit-btn" data-id="${card.id}" title="编辑"><i class="fa-solid fa-pen"></i></button>
+                                <button class="delete-btn" data-id="${card.id}" title="删除"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="card-form" id="form-${card.id}">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>卡片标题</label>
+                                    <input type="text" class="edit-title" value="${escapeHtml(card.title)}">
+                                </div>
+                                <div class="form-group">
+                                    <label>卡片类型</label>
+                                    <select class="edit-type">
+                                        ${Object.entries(cardTypeConfig).map(function(entry) {
+                                            var type = entry[0];
+                                            var config = entry[1];
+                                            return '<option value="' + type + '" ' + (card.card_type === type ? 'selected' : '') + '>' + config.name + '</option>';
+                                        }).join('')}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            ${isWeather ? `
+                            <div id="edit-weather-config-${card.id}" style="margin-bottom: 20px;">
+                                <label style="font-size: 12px; color: #64748b; font-weight: 500; display: block; margin-bottom: 8px;">数据来源模式</label>
+                                <div class="mode-toggle-group edit-mode-toggle" data-card-id="${card.id}">
+                                    <button class="mode-toggle-btn ${mode === 'iframe' ? 'active' : ''}" data-mode="iframe">iframe 嵌入</button>
+                                    <button class="mode-toggle-btn ${mode === 'api' ? 'active' : ''}" data-mode="api">API 接口</button>
+                                </div>
+                                
+                                <div class="edit-mode-config" id="edit-iframe-${card.id}" style="${mode === 'iframe' ? '' : 'display: none;'} margin-top: 12px;">
+                                    <div class="form-group">
+                                        <label>iframe 嵌入代码</label>
+                                        <textarea class="edit-iframe-code" rows="3">${escapeHtml(iframeCode)}</textarea>
+                                        <div class="config-hint">系统会自动从 URL 中识别城市</div>
+                                    </div>
+                                    <div class="form-group" style="margin-top: 12px;">
+                                        <label>OpenWeatherMap API Key（可选）</label>
+                                        <input type="text" class="edit-iframe-api-key" value="${escapeHtml(apiKey)}" placeholder="输入 API Key 获取实时数据">
+                                    </div>
+                                    <div class="form-group" style="margin-top: 12px;">
+                                        <label>iframe 高度 (px)</label>
+                                        <input type="number" class="edit-iframe-height" value="${iframeHeight}">
+                                    </div>
+                                </div>
+                                
+                                <div class="edit-mode-config" id="edit-api-${card.id}" style="${mode === 'api' ? '' : 'display: none;'} margin-top: 12px;">
+                                    <div class="form-group">
+                                        <label>API 服务地址</label>
+                                        <input type="text" class="edit-api-url" value="${escapeHtml(card.api_url || '')}" placeholder="https://api.openweathermap.org/data/2.5/weather">
+                                    </div>
+                                    <div class="form-group" style="margin-top: 12px;">
+                                        <label>API Key</label>
+                                        <input type="text" class="edit-api-key" value="${escapeHtml(card.api_key || '')}" placeholder="OpenWeatherMap API Key">
+                                    </div>
+                                    <div class="form-group" style="margin-top: 12px;">
+                                        <label>城市名称</label>
+                                        <input type="text" class="edit-city" value="${escapeHtml((displayConfig.city || 'Beijing'))}" placeholder="Beijing">
+                                    </div>
+                                </div>
+                            </div>
+                            ` : ''}
+                            
+                            ${isEmby ? `
+                            <div id="edit-emby-config-${card.id}" style="margin-bottom: 20px;">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Emby 服务器地址</label>
+                                        <input type="text" class="edit-emby-url" value="${escapeHtml(card.api_url || '')}" placeholder="http://192.168.1.100:8096">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>API Key</label>
+                                        <input type="text" class="edit-emby-key" value="${escapeHtml(card.api_key || '')}" placeholder="Emby API Key">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>显示媒体类型</label>
+                                        <select class="edit-media-type">
+                                            <option value="all" ${mediaType === 'all' ? 'selected' : ''}>全部</option>
+                                            <option value="movie" ${mediaType === 'movie' ? 'selected' : ''}>电影</option>
+                                            <option value="shows" ${mediaType === 'shows' ? 'selected' : ''}>剧集</option>
+                                            <option value="tv" ${mediaType === 'tv' ? 'selected' : ''}>电视节目</option>
+                                            <option value="video" ${mediaType === 'video' ? 'selected' : ''}>视频</option>
+                                            <option value="music" ${mediaType === 'music' ? 'selected' : ''}>音乐</option>
+                                            <option value="photo" ${mediaType === 'photo' ? 'selected' : ''}>照片</option>
+                                            <option value="boxset" ${mediaType === 'boxset' ? 'selected' : ''}>合集</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            ` : ''}
+                            
+                            ${isZblog ? `
+                            <div id="edit-zblog-config-${card.id}" style="margin-bottom: 20px;">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>XML-RPC 地址</label>
+                                        <input type="text" class="edit-zblog-url" value="${escapeHtml(card.api_url || '')}" placeholder="http://你的zblog域名/zb_system/xml-rpc/index.php">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>用户名</label>
+                                        <input type="text" class="edit-zblog-user" value="${escapeHtml(card.api_key || '')}" placeholder="Z-Blog 用户名">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>密码</label>
+                                        <input type="password" class="edit-zblog-pass" value="${escapeHtml((displayConfig.password || ''))}" placeholder="Z-Blog 密码">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>每分类文章数</label>
+                                        <input type="number" class="edit-zblog-posts" value="${displayConfig.posts_per_category || 3}" placeholder="3">
+                                    </div>
+                                </div>
+                            </div>
+                            ` : ''}
+                            
+                            ${isSystem ? `
+                            <div id="edit-system-config-${card.id}" style="margin-bottom: 20px;">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>监控模式</label>
+                                        <select class="edit-system-mode">
+                                            <option value="local" ${nasType === 'local' ? 'selected' : ''}>本地系统</option>
+                                            <option value="synology" ${nasType === 'synology' ? 'selected' : ''}>群晖 (Synology)</option>
+                                            <option value="fnos" ${nasType === 'fnos' ? 'selected' : ''}>飞牛 (fnOS)</option>
+                                            <option value="qnap" ${nasType === 'qnap' ? 'selected' : ''}>威联通 (QNAP)</option>
+                                            <option value="unraid" ${nasType === 'unraid' ? 'selected' : ''}>Unraid</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row" id="edit-nas-config-${card.id}" style="${nasType === 'local' ? 'display:none;' : ''}">
+                                    <div class="form-group">
+                                        <label>NAS 地址</label>
+                                        <input type="text" class="edit-nas-url" value="${escapeHtml(card.api_url || '')}" placeholder="http://192.168.1.100:5000">
+                                    </div>
+                                    <div class="form-group" id="edit-nas-user-group-${card.id}" style="${nasType === 'unraid' ? 'display:none;' : ''}">
+                                        <label>用户名</label>
+                                        <input type="text" class="edit-nas-user" value="${escapeHtml(card.api_key || '')}" placeholder="admin">
+                                    </div>
+                                    <div class="form-group" id="edit-nas-pass-group-${card.id}" style="${nasType === 'unraid' ? 'display:none;' : ''}">
+                                        <label>密码</label>
+                                        <input type="password" class="edit-nas-pass" value="${escapeHtml((displayConfig.password || ''))}" placeholder="密码">
+                                    </div>
+                                    <div class="form-group" id="edit-nas-apikey-group-${card.id}" style="${nasType === 'unraid' ? '' : 'display:none;'}">
+                                        <label>API Key (可选)</label>
+                                        <input type="text" class="edit-nas-apikey" value="${escapeHtml((displayConfig.api_key || ''))}" placeholder="Unraid API Key">
+                                    </div>
+                                </div>
+                            </div>
+                            ` : ''}
+                            
+                            ${(!isWeather && !isEmby && !isZblog && !isSystem) ? `
+                            <div id="edit-other-config-${card.id}" style="margin-bottom: 20px;">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>API / 服务地址</label>
+                                        <input type="text" class="edit-other-api-url" value="${escapeHtml(card.api_url || '')}" placeholder="https://api.example.com/data">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>API Key (可选)</label>
+                                        <input type="text" class="edit-other-api-key" value="${escapeHtml(card.api_key || '')}" placeholder="可选">
+                                    </div>
+                                </div>
+                            </div>
+                            ` : ''}
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>刷新间隔 (秒)</label>
+                                    <input type="number" class="edit-refresh" value="${card.refresh_interval || 60}">
+                                </div>
+                                <div class="form-group">
+                                    <label>排序权重 (越小越靠前)</label>
+                                    <input type="number" class="edit-sort" value="${card.sort_order || 0}">
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button class="btn-slate cancel-edit" data-id="${card.id}">取消</button>
+                                <button class="btn-cyan save-edit" data-id="${card.id}">保存修改</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            bindCardEvents();
+        }
+        
+        // ========== 绑定卡片事件 ==========
+        function bindCardEvents() {
+            document.querySelectorAll('.toggle-enabled').forEach(function(toggle) {
+                toggle.onclick = function(e) {
+                    e.stopPropagation();
+                    toggleCardEnabled(parseInt(this.dataset.id), this.checked);
+                };
+            });
+            
+            document.querySelectorAll('.edit-btn').forEach(function(btn) {
+                btn.onclick = function(e) {
+                    e.stopPropagation();
+                    var form = document.getElementById('form-' + this.dataset.id);
+                    form.classList.toggle('open');
+                };
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(function(btn) {
+                btn.onclick = function(e) {
+                    e.stopPropagation();
+                    deleteCard(parseInt(this.dataset.id));
+                };
+            });
+            
+            document.querySelectorAll('.save-edit').forEach(function(btn) {
+                btn.onclick = function(e) {
+                    e.stopPropagation();
+                    saveCard(parseInt(this.dataset.id));
+                };
+            });
+            
+            document.querySelectorAll('.cancel-edit').forEach(function(btn) {
+                btn.onclick = function(e) {
+                    e.stopPropagation();
+                    document.getElementById('form-' + this.dataset.id).classList.remove('open');
+                };
+            });
+            
+            document.querySelectorAll('.edit-mode-toggle').forEach(function(group) {
+                var cardId = group.dataset.cardId;
+                var btns = group.querySelectorAll('.mode-toggle-btn');
+                btns.forEach(function(btn) {
+                    btn.onclick = function(e) {
+                        e.stopPropagation();
+                        var mode = this.dataset.mode;
+                        btns.forEach(function(b) { b.classList.remove('active'); });
+                        this.classList.add('active');
+                        var iframeConfig = document.getElementById('edit-iframe-' + cardId);
+                        var apiConfig = document.getElementById('edit-api-' + cardId);
+                        if (mode === 'iframe') {
+                            iframeConfig.style.display = 'block';
+                            apiConfig.style.display = 'none';
+                        } else {
+                            iframeConfig.style.display = 'none';
+                            apiConfig.style.display = 'block';
+                        }
+                    };
+                });
+            });
+            
+            // 系统状态模式切换
+            document.querySelectorAll('.edit-system-mode').forEach(function(select) {
+                select.onchange = function() {
+                    var cardId = this.closest('.card-form').id.replace('form-', '');
+                    var mode = this.value;
+                    var nasConfig = document.getElementById('edit-nas-config-' + cardId);
+                    var userGroup = document.getElementById('edit-nas-user-group-' + cardId);
+                    var passGroup = document.getElementById('edit-nas-pass-group-' + cardId);
+                    var apiKeyGroup = document.getElementById('edit-nas-apikey-group-' + cardId);
+                    
+                    if (mode === 'local') {
+                        nasConfig.style.display = 'none';
+                    } else {
+                        nasConfig.style.display = 'grid';
+                        if (mode === 'unraid') {
+                            userGroup.style.display = 'none';
+                            passGroup.style.display = 'none';
+                            apiKeyGroup.style.display = 'block';
+                        } else {
+                            userGroup.style.display = 'block';
+                            passGroup.style.display = 'block';
+                            apiKeyGroup.style.display = 'none';
+                        }
+                    }
+                };
+            });
+        }
+        
+        // ========== 保存卡片 ==========
+        async function saveCard(cardId) {
+            var card = currentCards.find(function(c) { return c.id === cardId; });
+            if (!card) return;
+            
+            var form = document.getElementById('form-' + cardId);
+            var isWeather = card.card_type === 'weather';
+            var isEmby = card.card_type === 'emby';
+            var isZblog = card.card_type === 'zblog';
+            var isSystem = card.card_type === 'system';
+            
+            var displayConfig = {};
+            var apiUrl = '';
+            var apiKey = '';
+            
+            if (isWeather) {
+                var modeBtn = form.querySelector('.edit-mode-toggle .mode-toggle-btn.active');
+                var mode = modeBtn ? modeBtn.dataset.mode : 'iframe';
+                
+                if (mode === 'iframe') {
+                    var iframeCode = form.querySelector('.edit-iframe-code').value.trim();
+                    var iframeHeight = parseInt(form.querySelector('.edit-iframe-height').value) || 150;
+                    var iframeApiKey = form.querySelector('.edit-iframe-api-key').value.trim();
+                    apiUrl = iframeCode;
+                    displayConfig = { mode: 'iframe', height: iframeHeight };
+                    if (iframeApiKey) {
+                        displayConfig.api_key = iframeApiKey;
+                    }
+                } else {
+                    apiUrl = form.querySelector('.edit-api-url').value.trim();
+                    apiKey = form.querySelector('.edit-api-key').value.trim();
+                    var city = form.querySelector('.edit-city').value.trim() || 'Beijing';
+                    displayConfig = { mode: 'api', city: city };
+                }
+            } else if (isEmby) {
+                apiUrl = form.querySelector('.edit-emby-url').value.trim();
+                apiKey = form.querySelector('.edit-emby-key').value.trim();
+                var mediaType = form.querySelector('.edit-media-type').value;
+                displayConfig = { media_type: mediaType, limit: 20 };
+            } else if (isZblog) {
+                apiUrl = form.querySelector('.edit-zblog-url').value.trim();
+                apiKey = form.querySelector('.edit-zblog-user').value.trim();
+                var password = form.querySelector('.edit-zblog-pass').value.trim();
+                var postsPerCategory = parseInt(form.querySelector('.edit-zblog-posts').value) || 3;
+                displayConfig = { password: password, posts_per_category: postsPerCategory };
+            } else if (isSystem) {
+                var systemMode = form.querySelector('.edit-system-mode').value;
+                if (systemMode !== 'local') {
+                    apiUrl = form.querySelector('.edit-nas-url').value.trim();
+                    if (systemMode === 'unraid') {
+                        apiKey = form.querySelector('.edit-nas-apikey').value.trim();
+                    } else {
+                        apiKey = form.querySelector('.edit-nas-user').value.trim();
+                        var nasPass = form.querySelector('.edit-nas-pass').value.trim();
+                        displayConfig = { nas_type: systemMode, password: nasPass };
+                    }
+                    displayConfig.nas_type = systemMode;
+                }
+            } else {
+                apiUrl = form.querySelector('.edit-other-api-url').value.trim();
+                apiKey = form.querySelector('.edit-other-api-key').value.trim();
+                displayConfig = {};
+            }
+            
+            var updatedData = {
+                title: form.querySelector('.edit-title').value.trim(),
+                card_type: form.querySelector('.edit-type').value,
+                api_url: apiUrl,
+                api_key: apiKey,
+                refresh_interval: parseInt(form.querySelector('.edit-refresh').value) || 60,
+                sort_order: parseInt(form.querySelector('.edit-sort').value) || 0,
+                display_config: displayConfig,
+                enabled: card.enabled
+            };
+            
+            if (!updatedData.title) {
+                alert('请填写卡片标题');
+                return;
+            }
+            
+            try {
+                var response = await fetch('/api/home/cards/' + cardId, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedData)
+                });
+                
+                if (response.ok) {
+                    await loadCards();
+                    window.parent.postMessage({ type: 'refreshHome' }, '*');
+                } else {
+                    var error = await response.json();
+                    alert('保存失败: ' + (error.message || '未知错误'));
+                }
+            } catch (error) {
+                alert('保存失败: ' + error.message);
+            }
+        }
+        
+        // ========== 切换卡片状态 ==========
+        async function toggleCardEnabled(cardId, enabled) {
+            try {
+                var response = await fetch('/api/home/cards/' + cardId + '/toggle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ enabled: enabled ? 1 : 0 })
+                });
+                
+                if (response.ok) {
+                    await loadCards();
+                    window.parent.postMessage({ type: 'refreshHome' }, '*');
+                }
+            } catch (error) {
+                alert('切换失败: ' + error.message);
+                loadCards();
+            }
+        }
+        
+        // ========== 删除卡片 ==========
+        async function deleteCard(cardId) {
+            if (!confirm('确定要删除这个卡片吗？此操作不可恢复。')) return;
+            
+            try {
+                var response = await fetch('/api/home/cards/' + cardId, { method: 'DELETE' });
+                if (response.ok) {
+                    await loadCards();
+                    window.parent.postMessage({ type: 'refreshHome' }, '*');
+                } else {
+                    alert('删除失败');
+                }
+            } catch (error) {
+                alert('删除失败: ' + error.message);
+            }
+        }
+        
+        // ========== 添加卡片弹窗 ==========
+        var modal = document.getElementById('addCardModal');
+        
+        function openModal() {
+            document.getElementById('newCardTitle').value = '';
+            // 天气配置
+            document.getElementById('newCardIframeCode').value = '';
+            document.getElementById('newCardIframeApiKey').value = '';
+            document.getElementById('newCardIframeHeight').value = '150';
+            document.getElementById('newCardApiUrl').value = '';
+            document.getElementById('newCardApiKey').value = '';
+            document.getElementById('newCardCity').value = 'Beijing';
+            // Emby 配置
+            document.getElementById('newCardEmbyUrl').value = '';
+            document.getElementById('newCardEmbyKey').value = '';
+            document.getElementById('newCardEmbyType').value = 'all';
+            // Z-Blog 配置
+            document.getElementById('newCardZblogUrl').value = '';
+            document.getElementById('newCardZblogUser').value = '';
+            document.getElementById('newCardZblogPass').value = '';
+            document.getElementById('newCardZblogPosts').value = '3';
+            // 系统状态配置
+            document.getElementById('newCardSystemMode').value = 'local';
+            document.getElementById('newCardNasUrl').value = '';
+            document.getElementById('newCardNasUser').value = '';
+            document.getElementById('newCardNasPass').value = '';
+            document.getElementById('newCardNasApiKey').value = '';
+            toggleSystemConfig();
+            // 其他配置
+            document.getElementById('newCardOtherApiUrl').value = '';
+            document.getElementById('newCardOtherApiKey').value = '';
+            
+            selectedCardType = 'weather';
+            selectedWeatherMode = 'iframe';
+            updateCardTypeSelection();
+            modal.style.display = 'flex';
+        }
+        
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+        
+        function updateCardTypeSelection() {
+            document.querySelectorAll('.card-type-option').forEach(function(opt) {
+                if (opt.dataset.type === selectedCardType) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+            
+            var weatherConfig = document.getElementById('weatherConfigArea');
+            var embyConfig = document.getElementById('embyConfigArea');
+            var zblogConfig = document.getElementById('zblogConfigArea');
+            var systemConfig = document.getElementById('systemConfigArea');
+            var otherConfig = document.getElementById('otherCardConfig');
+            
+            weatherConfig.style.display = 'none';
+            embyConfig.style.display = 'none';
+            zblogConfig.style.display = 'none';
+            systemConfig.style.display = 'none';
+            otherConfig.style.display = 'none';
+            
+            if (selectedCardType === 'weather') {
+                weatherConfig.style.display = 'block';
+                updateWeatherMode(selectedWeatherMode);
+            } else if (selectedCardType === 'emby') {
+                embyConfig.style.display = 'block';
+            } else if (selectedCardType === 'zblog') {
+                zblogConfig.style.display = 'block';
+            } else if (selectedCardType === 'system') {
+                systemConfig.style.display = 'block';
+                toggleSystemConfig();
+            } else {
+                otherConfig.style.display = 'block';
+            }
+        }
+        
+        function updateWeatherMode(mode) {
+            selectedWeatherMode = mode;
+            var btns = document.querySelectorAll('#weatherModeToggle .mode-toggle-btn');
+            btns.forEach(function(btn) {
+                if (btn.dataset.mode === mode) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            var iframeConfig = document.getElementById('iframeModeConfig');
+            var apiConfig = document.getElementById('apiModeConfig');
+            
+            if (mode === 'iframe') {
+                iframeConfig.style.display = 'block';
+                apiConfig.style.display = 'none';
+            } else {
+                iframeConfig.style.display = 'none';
+                apiConfig.style.display = 'block';
+            }
+        }
+        
+        // ========== 添加卡片 ==========
+        async function addCard() {
+            var title = document.getElementById('newCardTitle').value.trim();
+            if (!title) {
+                alert('请填写卡片标题');
+                return;
+            }
+            
+            var cardData = {
+                title: title,
+                card_type: selectedCardType,
+                sort_order: currentCards.length,
+                enabled: 1,
+                refresh_interval: 60,
+                display_config: {}
+            };
+            
+            if (selectedCardType === 'weather') {
+                if (selectedWeatherMode === 'iframe') {
+                    var iframeCode = document.getElementById('newCardIframeCode').value.trim();
+                    if (!iframeCode) {
+                        alert('请填写 iframe 嵌入代码');
+                        return;
+                    }
+                    var height = parseInt(document.getElementById('newCardIframeHeight').value) || 150;
+                    var iframeApiKey = document.getElementById('newCardIframeApiKey').value.trim();
+                    cardData.api_url = iframeCode;
+                    cardData.display_config = { mode: 'iframe', height: height };
+                    if (iframeApiKey) {
+                        cardData.display_config.api_key = iframeApiKey;
+                    }
+                } else {
+                    var apiUrl = document.getElementById('newCardApiUrl').value.trim();
+                    var apiKey = document.getElementById('newCardApiKey').value.trim();
+                    var city = document.getElementById('newCardCity').value.trim() || 'Beijing';
+                    if (!apiKey) {
+                        alert('API 模式需要填写 API Key');
+                        return;
+                    }
+                    cardData.api_url = apiUrl || 'https://api.openweathermap.org/data/2.5/weather';
+                    cardData.api_key = apiKey;
+                    cardData.display_config = { mode: 'api', city: city };
+                }
+            } else if (selectedCardType === 'emby') {
+                var embyUrl = document.getElementById('newCardEmbyUrl').value.trim();
+                var embyKey = document.getElementById('newCardEmbyKey').value.trim();
+                var embyType = document.getElementById('newCardEmbyType').value;
+                if (!embyUrl || !embyKey) {
+                    alert('请填写完整的 Emby 配置（地址和 API Key）');
+                    return;
+                }
+                cardData.api_url = embyUrl;
+                cardData.api_key = embyKey;
+                cardData.display_config = { media_type: embyType, limit: 20 };
+            } else if (selectedCardType === 'zblog') {
+                var zblogUrl = document.getElementById('newCardZblogUrl').value.trim();
+                var zblogUser = document.getElementById('newCardZblogUser').value.trim();
+                var zblogPass = document.getElementById('newCardZblogPass').value.trim();
+                var zblogPosts = parseInt(document.getElementById('newCardZblogPosts').value) || 3;
+                
+                if (!zblogUrl || !zblogUser || !zblogPass) {
+                    alert('请填写完整的 Z-Blog 配置（地址、用户名、密码）');
+                    return;
+                }
+                cardData.api_url = zblogUrl;
+                cardData.api_key = zblogUser;
+                cardData.display_config = { password: zblogPass, posts_per_category: zblogPosts };
+            } else if (selectedCardType === 'system') {
+                var systemMode = document.getElementById('newCardSystemMode').value;
+                if (systemMode !== 'local') {
+                    var nasUrl = document.getElementById('newCardNasUrl').value.trim();
+                    if (!nasUrl) {
+                        alert('请填写 NAS 地址');
+                        return;
+                    }
+                    cardData.api_url = nasUrl;
+                    if (systemMode === 'unraid') {
+                        var nasApiKey = document.getElementById('newCardNasApiKey').value.trim();
+                        cardData.api_key = nasApiKey;
+                        cardData.display_config = { nas_type: systemMode };
+                    } else {
+                        var nasUser = document.getElementById('newCardNasUser').value.trim();
+                        var nasPass = document.getElementById('newCardNasPass').value.trim();
+                        if (!nasUser || !nasPass) {
+                            alert('请填写 NAS 用户名和密码');
+                            return;
+                        }
+                        cardData.api_key = nasUser;
+                        cardData.display_config = { nas_type: systemMode, password: nasPass };
+                    }
+                }
+            } else {
+                var otherApiUrl = document.getElementById('newCardOtherApiUrl').value.trim();
+                var otherApiKey = document.getElementById('newCardOtherApiKey').value.trim();
+                cardData.api_url = otherApiUrl;
+                cardData.api_key = otherApiKey;
+            }
+            
+            try {
+                var response = await fetch('/api/home/cards', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(cardData)
+                });
+                
+                if (response.ok) {
+                    closeModal();
+                    await loadCards();
+                    window.parent.postMessage({ type: 'refreshHome' }, '*');
+                } else {
+                    var error = await response.json();
+                    alert('添加失败: ' + (error.message || '未知错误'));
+                }
+            } catch (error) {
+                alert('添加失败: ' + error.message);
+            }
+        }
+        
+        // ========== 初始化 ==========
+        function init() {
+            document.getElementById('addCardBtn').onclick = openModal;
+            document.getElementById('closeModalBtn').onclick = closeModal;
+            document.getElementById('cancelModalBtn').onclick = closeModal;
+            document.getElementById('confirmAddCardBtn').onclick = addCard;
+            
+            document.querySelectorAll('.card-type-option').forEach(function(opt) {
+                opt.onclick = function() {
+                    selectedCardType = this.dataset.type;
+                    updateCardTypeSelection();
+                };
+            });
+            
+            document.querySelectorAll('#weatherModeToggle .mode-toggle-btn').forEach(function(btn) {
+                btn.onclick = function() {
+                    updateWeatherMode(this.dataset.mode);
+                };
+            });
+            
+            modal.onclick = function(e) {
+                if (e.target === modal) closeModal();
+            };
+            
+            loadCards();
+        }
+        
+        init();
+    </script>
+</body>
+</html>

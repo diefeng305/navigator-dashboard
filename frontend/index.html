@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">飞牛私有云</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <div class="top-navbar">
+        <div class="brand-area">
+            <div class="brand-logo" id="logoArea">O</div>
+            <span class="brand-text" id="logoTextDisplay">飞牛私有云</span>
+        </div>
+        
+        <div class="user-area-wrapper">
+            <div class="user-status-area" id="userArea"></div>
+            <div class="user-dropdown-menu" id="userDropdown">
+                <div class="dropdown-item" id="dropdownChangePwdBtn"><i class="fa-solid fa-key"></i> 修改密码</div>
+                <div class="dropdown-item" id="dropdownAdminBtn"><i class="fa-solid fa-sliders"></i> 系统设置</div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item logout-action" id="dropdownLogoutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> 安全登出</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="organizr-sidebar" id="sidebar">
+            <ul class="nav-menu" id="navList"></ul>
+        </div>
+
+        <div class="organizr-main">
+            <div class="iframe-loader" id="iframeLoader"><div class="spinner"></div></div>
+            <iframe id="pageFrame" class="main-view active" src="/pages/home.html" style="width:100%; height:100%; border:none;"></iframe>
+        </div>
+    </div>
+
+    <!-- 登录弹窗 -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="organizr-modal" id="loginModal">
+        <div class="modal-header">
+            <h4><i class="fa-solid fa-arrow-right-to-bracket"></i> 欢迎回来</h4>
+            <span class="close-icon" id="closeLogin">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <input type="text" id="loginUser" required autocomplete="off">
+                <label>用户名</label>
+            </div>
+            <div class="form-group">
+                <input type="password" id="loginPass" required>
+                <label>密码</label>
+            </div>
+            <button class="btn-cyan" id="submitLogin">
+                <i class="fa-solid fa-arrow-right-to-bracket"></i> 安全登入
+            </button>
+            <div style="text-align: center; margin-top: 16px; font-size: 12px; color: #475569;">
+                <i class="fa-regular fa-keyboard"></i> 默认管理员: admin / admin123
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

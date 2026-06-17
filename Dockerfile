@@ -1,7 +1,7 @@
 FROM python:3.11-slim
 
 LABEL maintainer="diefeng305"
-LABEL description="Navigator Dashboard - Personal Navigation & Dashboard System"
+LABEL description="Navigator Dashboard"
 
 WORKDIR /app
 
@@ -17,8 +17,15 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+# 复制 backend 目录
 COPY backend/ ./backend/
+
+# 复制 frontend 目录
 COPY frontend/ ./frontend/
+
+# 调试：列出文件
+RUN ls -la /app/
+RUN ls -la /app/backend/
 
 RUN mkdir -p /app/data
 

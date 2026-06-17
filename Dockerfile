@@ -17,15 +17,13 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 复制 backend 目录
-COPY backend/ ./backend/
-
-# 复制 frontend 目录
-COPY frontend/ ./frontend/
+# 复制所有文件
+COPY . .
 
 # 调试：列出文件
 RUN ls -la /app/
-RUN ls -la /app/backend/
+RUN ls -la /app/backend/ || echo "backend directory not found"
+RUN ls -la /app/frontend/ || echo "frontend directory not found"
 
 RUN mkdir -p /app/data
 

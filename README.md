@@ -148,42 +148,26 @@ text
 
 ### 方式一：Docker 一键部署（推荐）
 
-```bash
-# 1. 拉取镜像
-docker pull 你的用户名/navigator-dashboard:latest
-
-# 2. 创建数据目录
-mkdir -p navigator-data
-
-# 3. 启动容器
-docker run -d \
-  --name navigator \
-  -p 5000:5000 \
-  -v $(pwd)/navigator-data:/app/data \
-  -e FLASK_ENV=production \
-  --restart unless-stopped \
-  你的用户名/navigator-dashboard:latest
-
-# 4. 访问
-# http://localhost:5000
-# 管理员账号: admin / admin123
-方式二：Docker Compose 部署
-yaml
-# docker-compose.yaml
-version: '3.8'
-
 services:
-  navigator:
-    image: 你的用户名/navigator-dashboard:latest
-    container_name: navigator
+  navigator-dev:
+    image: diefeng305/navigator-dashboard:latest
+    container_name: navigator-debug-test
     ports:
-      - "5000:5000"
+      - "5500:5000"
     volumes:
       - ./data:/app/data
     environment:
       - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
     restart: unless-stopped
-bash
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/config"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+
 docker-compose up -d
 方式三：源码运行
 bash
